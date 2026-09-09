@@ -1,5 +1,7 @@
 const $ = (selector) => document.querySelector(selector);
 const message = $('#message');
+const emergencyResponse = $('#emergency-response');
+const locationMessage = $('#location-message');
 const statusClass = (status) => status === 'FIRE ALERT' ? 'alert' : status.toLowerCase();
 
 function showMessage(text) { message.textContent = text; message.classList.add('show'); }
@@ -10,6 +12,7 @@ function renderResult(result) {
   const status = $('#overall-status');
   status.textContent = result.status;
   status.className = statusClass(result.status);
+  emergencyResponse.hidden = result.status !== 'FIRE ALERT';
   $('#last-update').textContent = result.fire_smoke.mode === 'demo/mock' ? 'Demo signal path active' : (result.fire_smoke.mode === 'real model' ? 'Live fire/smoke model signal' : 'Fire/smoke model unavailable');
   $('#scan-label').textContent = result.source ? `Latest: ${result.source}` : 'Latest scan';
   $('#fire-value').textContent = result.fire_smoke.fire ? '1' : '0';
@@ -22,6 +25,33 @@ function renderResult(result) {
   if (result.preview_url) $('#preview').innerHTML = `<img src="${result.preview_url}" alt="Processed monitoring frame">`;
   loadAlerts();
 }
+
+function updateResponseLinks(latitude, longitude) {
+  document.querySelectorAll('.response-link').forEach((link) => {
+    const query = encodeURIComponent(`${link.dataset.service} near ${latitude},${longitude}`);
+    link.href = `https://www.google.com/maps/search/?api=1&query=${query}`;
+  });
+}
+
+$('#use-location').addEventListener('click', () => {
+  if (!navigator.geolocation) {
+    locationMessage.textContent = 'Location is unavailable in this browser. You can use the general map searches above.';
+    locationMessage.classList.add('show');
+    return;
+  }
+  locationMessage.textContent = 'Requesting your location...';
+  locationMessage.classList.add('show');
+  navigator.geolocation.getCurrentPosition(
+    ({ coords }) => {
+      updateResponseLinks(coords.latitude, coords.longitude);
+      locationMessage.textContent = 'Location added to the map searches. Your location stays in this browser.';
+    },
+    () => {
+      locationMessage.textContent = 'We could not access your location. You can use the general map searches above.';
+    },
+    { enableHighAccuracy: false, maximumAge: 300000, timeout: 10000 },
+  );
+});
 
 async function sendFile(file, endpoint) {
   clearMessage();
