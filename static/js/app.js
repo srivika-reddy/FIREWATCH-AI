@@ -34,8 +34,13 @@ async function sendFile(file, endpoint) {
     renderResult(result);
   } catch (error) { showMessage(error.message); }
 }
+$('#image-input').addEventListener('change', (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
 
-$('#image-input').addEventListener('change', (event) => sendFile(event.target.files[0], '/api/detect/image'));
+  $('#preview').innerHTML = `<img src="${URL.createObjectURL(file)}" alt="Selected monitoring frame">`;
+  sendFile(file, '/api/detect/image');
+});
 $('#video-input').addEventListener('change', (event) => sendFile(event.target.files[0], '/api/detect/video'));
 let cameraStream;
 $('#start-button').addEventListener('click', async () => {
