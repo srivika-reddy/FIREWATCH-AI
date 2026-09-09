@@ -1,0 +1,16 @@
+flowchart LR
+    I[Image Upload] --> V[Flask /api/detect/image]
+    V --> S[Save to uploads/]
+    S --> P[OpenCV Decode]
+    P --> F[Fire/Smoke Detection]
+    P --> O[YOLO Object Detection]
+    F --> C[Confidence Aggregation and Boxes]
+    O --> C
+    C --> T[Status Calculation]
+    T --> J[JSON Result]
+    J --> UI[Dashboard Cards and Preview]
+    J --> H[SQLite Alert History]
+
+    F -->|fire_confidence, smoke_confidence| C
+    O -->|people, animals, vehicles| C
+    T -->|SAFE, WARNING, FIRE ALERT| J

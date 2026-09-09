@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FireWatch AI | Forest Safety Monitoring</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="topbar"><div class="brand"><span class="brand-mark">FW</span><div><strong>FireWatch <em>AI</em></strong><span>AI Forest Safety Monitoring</span></div></div><div class="online"><i></i> SYSTEM ONLINE</div></header>
+  <main class="shell">
+    <section class="hero"><div><p class="eyebrow">OPERATIONS / LIVE MONITORING</p><h1>Keep a watchful eye<br><span>on the wild.</span></h1><p class="intro">A lightweight computer vision station for early forest safety signals.</p></div><div class="status-panel"><span>OVERALL STATUS</span><strong id="overall-status" class="safe">SAFE</strong><small id="last-update">Awaiting a scan</small></div></section>
+    <div id="message" class="message" role="status"></div>
+    <section class="monitor-grid">
+      <div class="preview-panel panel"><div class="panel-heading"><div><p class="eyebrow">PRIMARY FEED</p><h2>Detection preview</h2></div><span class="feed-pill"><i></i> READY</span></div><div id="preview" class="preview"><div class="preview-empty"><span class="crosshair">+</span><strong>Upload a frame to begin</strong><span>Images and short video clips supported</span></div></div><div class="controls"><label class="button button-primary"><span>↑</span> Upload image<input id="image-input" type="file" accept="image/*"></label><label class="button button-secondary"><span>▣</span> Upload video<input id="video-input" type="file" accept="video/*"></label><button id="start-button" class="button button-ghost">▶ Start monitoring</button><button id="stop-button" class="button button-ghost" disabled>■ Stop</button></div><p id="mode-note" class="mode-note">Fire/smoke: {{ fire_mode }} · Objects: {{ detector_mode }}</p></div>
+      <aside class="side-column"><div class="location-card panel"><div class="panel-heading"><div><p class="eyebrow">FIELD SITE</p><h2>Monitoring location</h2></div><span class="pin">⌖</span></div><div class="map"><div class="map-grid"></div><span class="map-pin">●</span><span class="map-label">PINE RIDGE</span></div><div class="location-meta"><div><span>AREA</span><strong>{{ location.name }}</strong></div><div><span>COORDINATES</span><strong>{{ '%.4f'|format(location.latitude) }}, {{ '%.4f'|format(location.longitude) }}</strong></div></div></div><div class="tip-card"><span>◒</span><div><strong>Watch protocol</strong><p>Upload a clear frame for object counts. Fire and smoke use the integrated real prototype model; switch <code>DEMO_MODE</code> for mock workflow testing.</p><small>Verify model and dataset licensing before redistribution.</small></div></div></aside>
+    </section>
+    <section class="detections"><div class="section-heading"><div><p class="eyebrow">VISION SIGNALS</p><h2>Detection snapshot</h2></div><span id="scan-label">No active scan</span></div><div class="detection-grid"><article class="detect-card fire"><span class="detect-icon">✦</span><div><span>FIRE</span><strong id="fire-value">0</strong></div><small id="fire-confidence">0% confidence</small></article><article class="detect-card smoke"><span class="detect-icon">≈</span><div><span>SMOKE</span><strong id="smoke-value">0</strong></div><small id="smoke-confidence">0% confidence</small></article><article class="detect-card people"><span class="detect-icon">◎</span><div><span>PEOPLE</span><strong id="people-value">0</strong></div><small>detected persons</small></article><article class="detect-card animals"><span class="detect-icon">⌁</span><div><span>ANIMALS</span><strong id="animals-value">0</strong></div><small>supported species</small></article><article class="detect-card vehicles"><span class="detect-icon">▱</span><div><span>VEHICLES</span><strong id="vehicles-value">0</strong></div><small>detected vehicles</small></article></div></section>
+    <section class="history-section"><div class="section-heading"><div><p class="eyebrow">AUDIT TRAIL</p><h2>Alert history</h2></div><button id="clear-history" class="text-button">Clear history ×</button></div><div class="table-wrap"><table><thead><tr><th>TIME</th><th>ALERT TYPE</th><th>CONFIDENCE</th><th>PEOPLE</th><th>ANIMALS</th><th>VEHICLES</th><th>STATUS</th></tr></thead><tbody id="history-body"><tr><td colspan="7" class="empty-row">No alerts recorded yet.</td></tr></tbody></table></div></section>
+  </main><footer><span>FIREWATCH AI / PROTOTYPE</span><span>Thresholds: Fire ≥ 40% · Smoke ≥ 60%</span></footer>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

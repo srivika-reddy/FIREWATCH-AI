@@ -1,0 +1,64 @@
+flowchart LR
+    subgraph FRONTEND[FRONTEND]
+        U[User] --> D[FireWatch Dashboard]
+    end
+
+    subgraph BACKEND[BACKEND]
+        API[Flask API]
+        IMG[Image Upload Path]
+        VID[Video Upload Path]
+        CVI[OpenCV Image Decode]
+        CVV[OpenCV Video Reader<br/>up to 60 frames, every fifth frame]
+        J[JSON Response]
+        PREVIEW[Annotated Image Preview]
+        API --> IMG
+        API --> VID
+        IMG --> CVI
+        VID --> CVV
+    end
+
+    subgraph AI[AI DETECTION]
+        FS[Dedicated Fire/Smoke Model]
+        YOLO[Ultralytics YOLO Object Model]
+        R[Detection Results]
+        FS --> R
+        YOLO --> R
+    end
+
+    subgraph ALERTS[ALERT LOGIC]
+        A[Alert Decision Logic]
+    end
+
+    subgraph DATABASE[DATABASE]
+        DB[(SQLite Alert History)]
+    end
+
+    D --> API
+    CVI --> FS
+    CVI --> YOLO
+    CVV --> FS
+    CVV --> YOLO
+    R --> A
+    A --> J
+    A --> DB
+    J --> D
+    FS -. fire, smoke, confidence, boxes .-> R
+    YOLO -. people, animals, vehicles, boxes .-> R
+    IMG --> PREVIEW
+    PREVIEW --> D
+
+    classDef frontend fill:#e8f2df,stroke:#4c8b57,color:#17351f,stroke-width:2px;
+    classDef backend fill:#e7eef7,stroke:#4d7198,color:#172b40,stroke-width:2px;
+    classDef ai fill:#fff0d9,stroke:#d9863f,color:#4a2b15,stroke-width:2px;
+    classDef alert fill:#ffe3df,stroke:#c94d42,color:#4a1f1b,stroke-width:2px;
+    classDef database fill:#eee7f4,stroke:#806596,color:#30233b,stroke-width:2px;
+    class U,D frontend;
+    class API,IMG,VID,CVI,CVV,J,PREVIEW backend;
+    class FS,YOLO,R ai;
+    class A alert;
+    class DB database;
+    style FRONTEND fill:#f4faef,stroke:#8cb68a,stroke-width:2px;
+    style BACKEND fill:#f1f6fc,stroke:#8eacc8,stroke-width:2px;
+    style AI fill:#fff9ef,stroke:#ddb27c,stroke-width:2px;
+    style ALERTS fill:#fff5f3,stroke:#d99a93,stroke-width:2px;
+    style DATABASE fill:#f8f3fb,stroke:#ad94bd,stroke-width:2px;
